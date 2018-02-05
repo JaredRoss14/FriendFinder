@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery.js"></script>
   <script src="main.js"></script>
 </head>
 <body>
@@ -162,5 +163,24 @@
     <br>
     <div class="text-center"><button type="submit" class="btn btn-primary btn-md" id="add-btn">Submit</button></div>
   </div>
+
+  <script type="text/javascript">
+    // Question: What does this code do?
+    $("#add-btn").on("click", function (event) {
+      event.preventDefault();
+      var newFriend = {
+        name: $("#name").val().trim(),
+        image: $("#image").val().trim(),
+      };
+
+      // Question: What does this code do??
+      $.post("/api/new", newFriend)
+        .then(function (data) {
+          console.log(data);
+          alert("Looking For Friends...");
+        });
+    });
+  </script>
+
 </body>
 </html>
