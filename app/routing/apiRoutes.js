@@ -1,29 +1,40 @@
-var express = require("express");
-var router = express.Router();
+//Require Dependencies
+var path = require('path');
 
-// Get list of friends from DB
-router.get("/friends", function (req, res) {
-  res.send({ type: 'GET' })
-});
+//Import friends data
+var friends = require("../data/friends.js");
 
-//add a new friend to DB
-router.post("/friends", function (req, res) {
-  console.log(req.body);
-  res.send({
-    type: 'POST',
-    name: req.body.name,
-    rank: req.body.friendliness
-  })
-});
+//Export Routes
+module.exports = function (app) {
+  
+  //List of friend entries
+  app.get('/api/friends', function (req, res) {
+    res.json(friends);
+  });
 
-// Update a friend in the db
-router.put("/friends/:id", function (req, res) {
-  res.send({ type: 'PUT' })
-});
+  //Add new friend entry
+  app.post('/api/friends', function (req, res) {
+    var userInput = req.body;
 
-//delete a friend in the db
-router.delete("/friends/:id", function (req, res) {
-  res.send({ type: 'DELETE' })
-});
+    var userResponses = userInput.scores;
 
-module.exports = router;
+    var matchName = '';
+    var matchImage = '';
+    var totalDifference = 100;
+
+    for (var i = 0; i < friends.length; i++) {
+      var diff = 0;
+      for (var j = 0; j < userResponses.length; j++) {
+        diff += Math.abs(friends[i].scores[j] - userResponses[j]);
+      }
+      if (diff < totalDifference) {
+        totalDifference = diff;
+        matchName = friends[i].name;
+        matchImage = friends[i].photo;
+      }
+    };
+    friends.push(userInput);
+
+    res.json({ status: "OK", matchName: matchName, matchImage: matchImage });
+  });
+};

@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery.js"></script>
-  <script src="main.js"></script>
 </head>
 <body>
   <div class="container">
@@ -23,7 +22,7 @@
       </div>
 
       <div class="form-group">
-        <label for="role">Link to Photo Image (Required)</label>
+        <label for="image">Link to Photo Image (Required)</label>
         <input type="text" class="form-control" id="image" required>
       </div>
 
@@ -161,23 +160,46 @@
 
     </form>
     <br>
-    <div class="text-center"><button type="submit" class="btn btn-primary btn-md" id="add-btn">Submit</button></div>
+    <div class="text-center"><button type="submit" class="btn btn-primary btn-md" id="add-btn" data-toggle="modal" data-target="#results-modal">Submit</button></div>
   </div>
 
+<div id="results-modal" class="modal">
+  <div class="modal-content">
+    <h4>Your closest friend:</h4>
+    <div class="divider"></div>
+    <h5 id="userMatch"></h5>
+    <img id="userMatchImage" width="650" src="">
+  </div>
+</div>
+
   <script type="text/javascript">
+
     // Question: What does this code do?
     $("#add-btn").on("click", function (event) {
-      event.preventDefault();
       var newFriend = {
         name: $("#name").val().trim(),
         image: $("#image").val().trim(),
+        scores: [
+          $('#q1').val().trim(),
+          $('#q2').val().trim(),
+          $('#q3').val().trim(),
+          $('#q4').val().trim(),
+          $('#q5').val().trim(),
+          $('#q6').val().trim(),
+          $('#q7').val().trim(),
+          $('#q8').val().trim(),
+          $('#q9').val().trim(),
+          $('#q10').val().trim()
+        ]
       };
 
       // Question: What does this code do??
-      $.post("/api/new", newFriend)
-        .then(function (data) {
-          console.log(data);
-          alert("Looking For Friends...");
+      $.post("/api/friends", newFriend)
+        .done(function (data) {
+          $('userMatch').html(data.matchName);
+          $('userMatchImage').attr("SRC", data.matchImage);
+
+          $('results-modal').modal('show');
         });
     });
   </script>
